@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"flag"
 	"fmt"
 	"github.com/solkimllag/gictl/github"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -16,9 +18,21 @@ var editor string
 func init() {
 	term = os.Getenv("TERM")
 	editor = os.Getenv("EDITOR")
+	if !binaryExists(term) {
+		fmt.Printf("\nTERM env is not set or %s is not an executable.\n", term)
+	}
+	if !binaryExists(editor) {
+		fmt.Printf("\nEDITOR env is not set or %s is not an executable.\n", editor)
+	}
+}
+
+func binaryExists(binary string) bool {
+	_, err := exec.LookPath(binary)
+	return err == nil
 }
 
 func Gictl() {
+	flag.Parse()
 	args := os.Args[1:]
 	numOfArgs := len(args)
 	var command string
