@@ -3,7 +3,6 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"github.com/solkimllag/gictl/github"
 	"os"
 	"os/exec"
 	"strconv"
@@ -61,26 +60,11 @@ func Gictl() {
 	case "list":
 		printIssues()
 	case "get":
-		issue, err := getIssue(issueNumber)
-		if err != nil {
-			fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
-		} else {
-			fmt.Printf("#%-5d %s %.55s\n",
-				issue.Number, issue.User.Login, issue.Title)
-		}
+		printIssue(issueNumber)
 	case "edit":
-		issue, err := getIssue(issueNumber)
-		if err != nil {
-			fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
-		} else {
-			updateIssue(issueNumber, editIssue(issue))
-		}
+		edit(issueNumber)
 	case "create":
-		var issue github.Issue
-		issue.Title = "Fill in title.."
-		issue.Body = "..and describe it in detail"
-		createIssue(editIssue(&issue))
-
+		create()
 	default:
 		printHelp()
 	}

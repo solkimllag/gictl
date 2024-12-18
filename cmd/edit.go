@@ -19,6 +19,16 @@ func updateIssue(issueNumber int, updatedIssue *github.Issue) {
 	}
 }
 
+// Edit an issue, convenience wrapper
+func edit(issueNumber int) {
+	issue, err := getIssue(issueNumber)
+	if err != nil {
+		fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
+	} else {
+		updateIssue(issueNumber, editIssue(issue))
+	}
+}
+
 // Opens an issue for edit in a terminal text editor
 func editIssue(issue *github.Issue) *github.Issue {
 
