@@ -9,7 +9,7 @@ $ gictl help
 ```
 
 ```
-Usage: gictl [COMMAND] [repo_owner_id/repo_name] [issue_number]
+Usage: gictl [-i n] [-gr repo_owner_id/repo_name] [command]
 Commands:
   list    Print list of issues.
   get     Print an issue. Issue number must be specified.
@@ -18,24 +18,30 @@ Commands:
 
 ENV vars
   GITHUB_TOKEN must be set for github api authentication to work. To learn about fine grained personal access tokens visit: 
-		https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28#authenticating-with-a-personal-access-token
+                https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28#authenticating-with-a-personal-access
+-token
   EDITOR must be set
   TERM   must be set
 
   Both edit and create commands will attempt to open a terminal text editor. For this to work, both TERM and EDITOR env vars should be set.
 
-
 Examples:
   To list all github issues for github.com/solkimllag/dotfiles repo,
   run: 
-  $ gictl list solkimllag/dotfiles
+  $ gictl -gr solkimllag/dotfiles list
 
   To get a specific issue run:
-  $ gictl get solkimllag/dotfiles 1
+  $ gictl -gr solkimllag/dotfiles -i 1123 get
 
   To edit a specif issue run:
-  $ gictl edit solkimllag/dotfiles 3
+  $ gictl -gr solkimllag/dotfiles -i 1234 edit
 
   To create a new issue run:
   $ gictl create
+
+Flags:
+  -gr value
+        Specify github repo. For example: solkimllag/gictl
+  -i int
+        Specify issue number.
 ```
