@@ -63,7 +63,7 @@ func Gictl() {
 	case "get":
 		issue, err := getIssue(issueNumber)
 		if err != nil {
-			fmt.Printf("Unable to fetch issue# %d", issueNumber)
+			fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
 		} else {
 			fmt.Printf("#%-5d %s %.55s\n",
 				issue.Number, issue.User.Login, issue.Title)
@@ -71,7 +71,7 @@ func Gictl() {
 	case "edit":
 		issue, err := getIssue(issueNumber)
 		if err != nil {
-			fmt.Printf("Unable to fetch issue# %d", issueNumber)
+			fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
 		} else {
 			updateIssue(issueNumber, editIssue(issue))
 		}
