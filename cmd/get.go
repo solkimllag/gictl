@@ -6,7 +6,7 @@ import (
 )
 
 // Prints a particular github issue
-func printIssue(issueNumber int) {
+func printIssue(issueNumber *int) {
 	issue, err := getIssue(issueNumber)
 	if err != nil {
 		fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
@@ -17,7 +17,7 @@ func printIssue(issueNumber int) {
 }
 
 // Fetches a particular github issue
-func getIssue(issueNumber int) (*github.Issue, error) {
-	issue, err := github.GetIssue(userId, repo, issueNumber)
+func getIssue(issueNumber *int) (*github.Issue, error) {
+	issue, err := github.GetIssue(userId, repo, *issueNumber)
 	return issue, err
 }

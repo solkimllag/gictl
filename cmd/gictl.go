@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
-	"strconv"
 	"strings"
 )
 
@@ -31,32 +31,59 @@ func binaryExists(binary string) bool {
 }
 
 func Gictl() {
-	flag.Parse()
-	args := os.Args[1:]
-	numOfArgs := len(args)
-	var command string
-	var issueNumber int = 0
 
-	if numOfArgs > 0 {
-		command = args[0]
-	}
-	if numOfArgs > 1 {
-		gitRepo := strings.Split(args[1], "/")
-		userId, repo = gitRepo[0], gitRepo[1]
-	}
-	if numOfArgs > 2 {
-		issue, err := strconv.Atoi(args[2])
-		if err != nil {
-			fmt.Print(err)
-		} else {
-			issueNumber = issue
+	issueNumber := flag.Int("i", 0, "Specify issue number.")
+	flag.Func("gr", "Specify github repo. For example: solkimllag/gictl", func(gr string) error {
+		gitRepo := strings.Split(gr, "/")
+		if len(gitRepo) < 2 {
+			return errors.New("Unable to parse repo name.")
 		}
-	}
-	if userId == "" || repo == "" {
-		fmt.Println("githubuser/githubrepo is missing")
+		userId, repo = gitRepo[0], gitRepo[1]
+		if userId == "" || repo == "" {
+			return errors.New("Githubuser/githubrepo is missing")
+		}
+		return nil
+	})
+	flag.Usage = func() {
+		fmt.Println()
+		fmt.Print(`Usage: gictl [-i n] [-gr repo_owner_id/repo_name] [command]
+Commands:
+  list    Print list of issues.
+  get     Print an issue. Issue number must be specified.
+  create  Creates a new issue for the given repo.
+  edit    Edit an issue. Issue number must be specified.
+
+ENV vars
+  GITHUB_TOKEN must be set for github api authentication to work. To learn about fine grained personal access tokens visit: 
+		https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28#authenticating-with-a-personal-access-token
+  EDITOR must be set
+  TERM   must be set
+
+  Both edit and create commands will attempt to open a terminal text editor. For this to work, both TERM and EDITOR env vars should be set.
+
+Examples:
+  To list all github issues for github.com/solkimllag/dotfiles repo,
+  run: 
+  $ gictl -gr solkimllag/dotfiles list
+
+  To get a specific issue run:
+  $ gictl -gr solkimllag/dotfiles -i 1123 get
+
+  To edit a specif issue run:
+  $ gictl -gr solkimllag/dotfiles -i 1234 edit
+
+  To create a new issue run:
+  $ gictl create
+
+Flags:`)
+
+		fmt.Println()
+		flag.PrintDefaults()
+		fmt.Println()
 	}
 
-	switch command {
+	flag.Parse()
+	switch flag.Arg(0) {
 	case "list":
 		printIssues()
 	case "get":
@@ -66,6 +93,6 @@ func Gictl() {
 	case "create":
 		create()
 	default:
-		printHelp()
+		flag.Usage()
 	}
 }

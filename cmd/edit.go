@@ -10,9 +10,9 @@ import (
 )
 
 // Updates an existing issue
-func updateIssue(issueNumber int, updatedIssue *github.Issue) {
+func updateIssue(issueNumber *int, updatedIssue *github.Issue) {
 
-	err := github.UpdateIssue(userId, repo, issueNumber, updatedIssue)
+	err := github.UpdateIssue(userId, repo, *issueNumber, updatedIssue)
 	if err != nil {
 		fmt.Printf("Something went wrong with updating issue: %d", issueNumber)
 		log.Fatal(err)
@@ -20,7 +20,7 @@ func updateIssue(issueNumber int, updatedIssue *github.Issue) {
 }
 
 // Edit an issue, convenience wrapper
-func edit(issueNumber int) {
+func edit(issueNumber *int) {
 	issue, err := getIssue(issueNumber)
 	if err != nil {
 		fmt.Printf("Unable to fetch issue# %d\n", issueNumber)
@@ -50,7 +50,9 @@ func editIssue(issue *github.Issue) *github.Issue {
 	if err != nil {
 		log.Printf("Error while editing issue.")
 	} else {
-		log.Printf("Issue %d succesfully edited", issue.Number)
+		if issue.Number != 0 {
+			log.Printf("Issue %d succesfully edited", issue.Number)
+		}
 	}
 	issueJson, err = os.ReadFile(fileName)
 	if err != nil {
