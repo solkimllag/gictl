@@ -61,19 +61,19 @@ func Gictl() {
 	case "list":
 		printIssues()
 	case "get":
-		if issueNumber != 0 {
-			issue := getIssue(issueNumber)
+		issue, err := getIssue(issueNumber)
+		if err != nil {
+			fmt.Printf("Unable to fetch issue# %d", issueNumber)
+		} else {
 			fmt.Printf("#%-5d %s %.55s\n",
 				issue.Number, issue.User.Login, issue.Title)
-		} else {
-			fmt.Println("Issue number is missing")
 		}
 	case "edit":
-		if issueNumber != 0 {
-			issue := getIssue(issueNumber)
-			updateIssue(issueNumber, editIssue(issue))
+		issue, err := getIssue(issueNumber)
+		if err != nil {
+			fmt.Printf("Unable to fetch issue# %d", issueNumber)
 		} else {
-			fmt.Println("Issue number is missing")
+			updateIssue(issueNumber, editIssue(issue))
 		}
 	case "create":
 		var issue github.Issue
